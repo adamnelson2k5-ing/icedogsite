@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ICE DOG - Salon de toilettage canin professionnel. Services de bain, coupe et spa pour votre chien. Réservez votre rendez-vous en ligne.">
+    <meta name="keywords" content="toilettage chien, salon toilettage, grooming, réservation toilettage, bain chien">
+    <meta name="author" content="ICE DOG">
+    <title>ICE DOG - Toilettage Canin Professionnel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%234A90E2'/%3E%3Ctext x='50' y='70' font-size='60' font-weight='bold' fill='white' text-anchor='middle'%3E🐕%3C/text%3E%3C/svg%3E">
+</head>
+<style>
+    body{
+        background-image: url(icc.png);
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+</style>
+
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🐕</span>
+                <h1>ICE DOG</h1>
+            </div>
+            <button class="menu-toggle" id="menuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#accueil">Accueil</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#tarifs">Tarifs</a></li>
+                <li><a href="#galerie">Galerie</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="admin.php" class="nav-admin">🔐 Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="accueil">
+        <div class="hero-content">
+            <h2>Bienvenue chez ICE DOG</h2>
+            <p> TOILETTAGE - BIEN ÊTRE - COMPLICITÉ  </p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="document.getElementById('reservation').scrollIntoView({behavior: 'smooth'})">Réserver un rendez-vous</button>
+                <button class="btn btn-secondary" onclick="prefillAbonnement()">S'abonner au forfait mensuel</button>
+                <button class="btn btn-secondary" onclick="document.getElementById('services').scrollIntoView({behavior: 'smooth'})">Découvrir nos services</button>
+            </div>
+        </div>
+        <div class="hero-background">
+            <svg class="wave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120">
+                <path d="M0,30 Q300,60 600,30 T1200,30 L1200,120 L0,120 Z" fill="white"/>
+            </svg>
+        </div>
+    </header>
+
+    <!-- Services Section -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Nos Services</h2>
+            <p class="section-subtitle">Des soins premium pour votre compagnon</p>
+            
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🛁</div>
+                    <h3>Bain & Séchage</h3>
+                    <p>Bain professionnel avec produits hypoallergéniques, séchage soigné et brossage complet pour une fourrure douce et brillante.</p>
+                    <ul class="service-features">
+                        <li>✓ Produits premium</li>
+                        <li>✓ Bain à température contrôlée</li>
+                        <li>✓ Séchage doux</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">✂️</div>
+                    <h3>Coupe & Toilettage</h3>
+                    <p>Coupes styles personnalisées adaptées à la race et aux besoins de votre chien. Nos toiletteurs sont formés aux dernières techniques.</p>
+                    <ul class="service-features">
+                        <li>✓ Tonte complète</li>
+                        <li>✓ Coupes style</li>
+                        <li>✓ Nettoyage des oreilles</li>
+                    </ul>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🎀</div>
+                    <h3>Forfait Complet</h3>
+                    <p>Package premium incluant bain, coupe et finitions pour une transformation complète de votre chien. Résultat impeccable garanti !</p>
+                    <ul class="service-features">
+                        <li>✓ Bain & Séchage</li>
+                        <li>✓ Coupe complète</li>
+                        <li>✓ Finitions parfaites</li>
+                        <li>✓ Satisfaction 100%</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tarifs / Offres Section -->
+    <section class="tarifs" id="tarifs">
+        <div class="container">
+            <h2 style="color:#DC143C;" class="section-title">Offre de Toilettage</h2>
+            <p class="section-subtitle">Rendez-vous standard et abonnement mensuel</p>
+
+            <div class="pricing-summary">
+                <p style="color: #1a1a1a;">Toilettage complet (rendez-vous standard) : <b>20 000 francs</b></p>
+                <p style="color: #1a1a1a;">Offre spéciale abonnement mensuel : <b>15 000 francs</b> par visite — <em>vous vous abonnez et nous  passons  une fois par mois</em>.</p>
+                <p style="margin-top:0.5rem; color:#DC143C;"><strong>Avantage :</strong> tarif réduit pour les abonnés, passage mensuel garanti.</p>
+
+                <div style="margin-top:1rem; display:flex; gap:12px; flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="document.getElementById('reservation').scrollIntoView({behavior:'smooth'});">Réserver un rendez-vous (20 000)</button>
+                    <button class="btn btn-secondary" onclick="prefillAbonnement();">S'abonner (15 000)</button>
+                </div>
+                <p style="margin-top:0.75rem; font-size:0.9rem; color:#555;">Pour toute question ou pour confirmer un abonnement, contactez-nous au <a href="tel:065778010">065 77 80 10</a> ou par email à <a href="mailto:icedog241@gmail.com">icedog241@gmail.com</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function prefillAbonnement() {
+            // Scroll vers le formulaire
+            const formSection = document.getElementById('reservation');
+            if (!formSection) return;
+            formSection.scrollIntoView({behavior: 'smooth'});
+
+            // Prefill form fields if present
+            setTimeout(() => {
+                const serviceSelect = document.getElementById('service');
+                const messageField = document.getElementById('message');
+                const poidsField = document.getElementById('poids');
+                if (serviceSelect) serviceSelect.value = 'abonnement';
+                if (messageField) messageField.value = "Je souhaite souscrire à l'abonnement mensuel (15 000 francs par visite). Merci de me contacter pour confirmer les détails.";
+                if (poidsField) poidsField.focus();
+            }, 600);
+        }
+    </script>
+
+    <!-- Galerie Section -->
+    <section class="galerie" id="galerie">
+        <div class="container">
+            <h2 class="section-title">Galerie Avant/Après</h2>
+            <p class="section-subtitle">Découvrez les transformations de nos clients</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <div class="gallery-image">
+                        <img src="im av.jpeg" alt="Avant toilettage" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <h3>Avant Toilettage</h3>
+                    <p>Fourrure ébouriffée et matée</p>
+                </div>
+
+                <div class="gallery-item transformation">
+                    <div class="arrow">→</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="gallery-image">
+                        <img src="im ap.jpeg" alt="Après toilettage" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <h3>Après Toilettage</h3>
+                    <p>Fourrure brillante et douce</p>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="gallery-image">
+                        <video width="100%" height="100%" style="object-fit: cover;" controls>
+                            <source src="vid.mp4" type="video/mp4">
+                            <p>Votre navigateur ne supporte pas la vidéo HTML5.</p>
+                        </video>
+                    </div>
+                    <h3>Notre Service en Vidéo</h3>
+                    <p>Découvrez notre expertise</p>
+                </div>
+
+                <div class="gallery-item transformation">
+                    <div class="arrow">✨</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="gallery-image">
+                        <img src="im ap.jpeg" alt="Chien heureux" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <h3>Chien Satisfait</h3>
+                    <p>Résultat impeccable garanti</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Infos Section -->
+    <section class="contact-info">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">📍</div>
+                    <h3>Adresse</h3>
+                    <p>Libreville charbonnage<br>Libreville, Gabon</p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">🕒</div>
+                    <h3>Horaires d'Ouverture</h3>
+                    <p>
+                        Lundi - Vendredi: 9h00 - 19h00<br>
+                        Samedi: 9h00 - 18h00<br>
+                        Dimanche: Fermé
+                    </p>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">📞</div>
+                    <h3>Contact</h3>
+                    <p>
+                        Tél: <a href="tel:065778010">065 77 80 10</a><br>
+                        Email: <a href="mailto:icedog241@gmail.com">icedog241@gmail.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Réseaux Sociaux Section -->
+    <section class="reseaux-sociaux" id="reseaux-sociaux">
+        <div class="container">
+            <h2 class="section-title">Suivez-Nous sur les Réseaux Sociaux</h2>
+            <p class="section-subtitle">Restez connecté avec ICE DOG</p>
+            
+            <div class="social-grid">
+                <a href="https://www.facebook.com/share/1Bwq8ywTas/?mibextid=wwXIfr" target="_blank" class="social-card" title="Facebook">
+                    <div class="social-icon">📘</div>
+                    <h3>Facebook</h3>
+                    <p>Rejoignez notre communauté</p>
+                </a>
+                
+                <a href="https://www.instagram.com/icedog_gabon/" target="_blank" class="social-card" title="Instagram">
+                    <div class="social-icon">📷</div>
+                    <h3>Instagram</h3>
+                    <p>Suivez nos photos</p>
+                </a>
+                
+                <a href="https://wa.me/241657780010" target="_blank" class="social-card" title="WhatsApp">
+                    <div class="social-icon">💬</div>
+                    <h3>WhatsApp</h3>
+                    <p>+241 05 77 80 10</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Réservation Section -->
+    <section class="reservation" id="reservation">
+        <div class="container">
+            <h2 class="section-title">Réserver un Rendez-Vous</h2>
+            <p class="section-subtitle">Remplissez le formulaire ci-dessous pour prendre rendez-vous</p>
+            
+            <form class="reservation-form" id="reservationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nom">Votre Nom *</label>
+                        <input type="text" id="nom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Votre Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="telephone">Téléphone *</label>
+                        <input type="tel" id="telephone" name="telephone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nomChien">Nom du Chien *</label>
+                        <input type="text" id="nomChien" name="nomChien" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="race">Race du Chien *</label>
+                        <input type="text" id="race" name="race" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Âge du Chien *</label>
+                        <input type="number" id="age" name="age" min="0" max="30" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="poids">Poids du Chien (kg) *</label>
+                        <input type="number" id="poids" name="poids" min="0" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service Souhaité *</label>
+                        <select id="service" name="service" required>
+                            <option value="">Sélectionnez un service</option>
+                            <option value="forfait">Rendez-vous Standard (20 000 F)</option>
+                            <option value="abonnement">Abonnement Mensuel (15 000 F)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="date">Date Souhaitée *</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="heure">Heure Souhaitée *</label>
+                        <select id="heure" name="heure" required>
+                            <option value="">Sélectionnez une heure</option>
+                            <option value="09:00">09:00</option>
+                            <option value="09:30">09:30</option>
+                            <option value="10:00">10:00</option>
+                            <option value="10:30">10:30</option>
+                            <option value="11:00">11:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="14:30">14:30</option>
+                            <option value="15:00">15:00</option>
+                            <option value="15:30">15:30</option>
+                            <option value="16:00">16:00</option>
+                            <option value="16:30">16:30</option>
+                            <option value="17:00">17:00</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="message">Message Supplémentaire</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Toute information pertinente (allergies, comportement, besoins spéciaux, etc.)"></textarea>
+                </div>
+
+                <div class="form-group checkbox full-width">
+                    <label for="conditions">
+                        <input type="checkbox" id="conditions" name="conditions" required>
+                        <span>J'accepte les conditions d'utilisation et la politique de confidentialité</span>
+                    </label>
+                </div>
+
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button type="submit" class="btn btn-primary btn-large">Confirmer ma Réservation</button>
+                </div>
+                <div id="formMessage" class="form-message"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Nous Contacter</h2>
+            <p class="section-subtitle">Une question ? N'hésitez pas à nous écrire</p>
+            
+            <form class="contact-form" id="contactForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contactNom">Votre Nom *</label>
+                        <input type="text" id="contactNom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Votre Email *</label>
+                        <input type="email" id="contactEmail" name="email" required>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="sujet">Sujet *</label>
+                    <input type="text" id="sujet" name="sujet" required>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="contactMessage">Message *</label>
+                    <textarea id="contactMessage" name="message" rows="5" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Envoyer le Message</button>
+                <div id="contactFormMessage" class="form-message"></div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ICE DOG</h3>
+                    <p>Votre salon de toilettage canin de confiance depuis 2020.</p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/share/1Bwq8ywTas/?mibextid=wwXIfr" target="_blank" title="Facebook">📘</a>
+                        <a href="https://www.instagram.com/icedog_gabon/" target="_blank" title="Instagram">📷</a>
+                        <a href="https://wa.me/241657780010" target="_blank" title="WhatsApp">💬</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Services</h4>
+                    <ul>
+                        <li><a href="#services">Bain & Séchage</a></li>
+                        <li><a href="#services">Coupe & Toilettage</a></li>
+                        <li><a href="#services">Forfait Complet</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Infos Utiles</h4>
+                    <ul>
+                        <li><a href="#tarifs">Tarifs</a></li>
+                        <li><a href="#galerie">Galerie</a></li>
+                        <li><a href="#reseaux-sociaux">Réseaux Sociaux</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><strong>Tél:</strong> 065 77 80 10</li>
+                        <li><strong>Email:</strong> icedog241@gmail.com</li>
+                        <li><strong>Adresse:</strong> Libreville charbonnage<br>Libreville, Gabon</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 ICE DOG - Tous droits réservés. </p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

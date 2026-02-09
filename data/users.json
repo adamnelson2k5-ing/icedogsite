@@ -1,0 +1,23 @@
+[
+    {
+        "id": "user_1",
+        "email": "test@icedog.com",
+        "password": "$2y$12$Nl6ra8\/snQeY7hdg1svq1OL7hNSuIbx9cPYN0\/BGCh4E7Xhj8Z8fG",
+        "name": "Utilisateur Test"
+    },
+    {
+        "id": "user_698651922ed2a",
+        "email": "adamnelson2k5@gmail.com",
+        "password": "$2y$12$5wLHQ6T6f7xXSuaXZ2WgP.e4K3RQEA6TLMM8qiUgI9xNhoyR.7mHW",
+        "name": "My nigga "
+    },
+    {
+        "id": "admin_6987402b44734",
+        "email": "icedog241@gmail.com",
+        "password": "$2y$12$DU4mhHvV8pp6gHQPw7Qqs.tRtSHIeT5P7\/UOxpK6bpIYjh3k9NpFO",
+        "name": "Moussounda jeremie",
+        "created_at": "2026-02-07 13:37:48",
+        "role": "admin",
+        "status": "active"
+    }
+]

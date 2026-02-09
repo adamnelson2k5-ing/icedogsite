@@ -1,0 +1,28 @@
+# Fichier robots.txt pour ICE DOG
+# Configuration du crawler des moteurs de recherche
+
+# Tous les robots
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /private/
+Disallow: /temp/
+Disallow: /cache/
+Disallow: /*.php$
+
+# Google
+User-agent: Googlebot
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+
+# Sitemaps
+Sitemap: https://www.icedog.fr/sitemap.xml
+
+# Crawl-delay (délai minimum entre les requêtes en secondes)
+# Crawler-delay: 1
+
+# Requête/sec pour les bots rapides
+# Request-rate: 1/10
