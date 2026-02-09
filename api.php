@@ -3,13 +3,19 @@
  * API ICE DOG - Gestion des réservations et formulaires de contact
  */
 
-session_start();
+// Démarrer la mise en buffer pour éviter les erreurs HTML
+ob_start();
 
-// Configuration
+// Configuration des en-têtes
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
+
+// Gestion des erreurs - NE PAS afficher les erreurs
+error_reporting(E_ALL);
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
 
 // Configuration de la base de données
 define('DB_HOST', 'localhost');
@@ -19,17 +25,26 @@ define('DB_NAME', 'icedog');
 define('EMAIL_CONTACT', 'icedog241@gmail.com');
 define('EMAIL_ADMIN', 'adamnelson2k5@gmail.com');
 
-// Gestion des erreurs
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
+// Fonction pour retourner une réponse JSON
+function sendJson($success, $message, $data = null) {
+    ob_clean(); // Nettoyer tout output précédent
+    header('Content-Type: application/json; charset=utf-8');
+    $response = [
+        'success' => $success,
+        'message' => $message
+    ];
+    if ($data) {
+        $response['data'] = $data;
+    }
+    echo json_encode($response);
+    exit;
+}
 
 // Connexion à la DB
 function getDBConnection() {
     $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
     if ($conn->connect_error) {
-        http_response_code(500);
-        error_log("Erreur DB: " . $conn->connect_error);
-        die(json_encode(['success' => false, 'message' => 'Erreur de connexion à la base de données: ' . $conn->connect_error]));
+        sendJson(false, 'Erreur de connexion à la base de données');
     }
     $conn->set_charset("utf8");
     return $conn;
@@ -42,7 +57,6 @@ function verifyTables($conn) {
     foreach ($tables_needed as $table) {
         $result = $conn->query("SHOW TABLES LIKE '$table'");
         if ($result->num_rows == 0) {
-            error_log("Table manquante: $table");
             return false;
         }
     }
@@ -254,13 +268,11 @@ if ($action === 'create_reservation' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>";
         sendEmail($data['email'], $clientSubject, $clientHtml);
         
-        echo json_encode(['success' => true, 'message' => 'Réservation enregistrée']);
         $conn->close();
+        sendJson(true, 'Réservation enregistrée');
     } catch (Exception $e) {
-        error_log("Erreur réservation: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Erreur: ' . $e->getMessage()]);
+        sendJson(false, 'Erreur de réservation: ' . $e->getMessage());
     }
-    exit;
 }
 
 // Route: Créer un abonnement
@@ -401,13 +413,11 @@ if ($action === 'create_subscription' && $_SERVER['REQUEST_METHOD'] === 'POST') 
         </div>";
         sendEmail($data['email'], $clientSubject, $clientHtml);
         
-        echo json_encode(['success' => true, 'message' => 'Abonnement enregistré']);
         $conn->close();
+        sendJson(true, 'Abonnement enregistré');
     } catch (Exception $e) {
-        error_log("Erreur abonnement: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Erreur: ' . $e->getMessage()]);
+        sendJson(false, 'Erreur d\'abonnement: ' . $e->getMessage());
     }
-    exit;
 }
 
 // Route: Créer un message de contact
@@ -416,10 +426,14 @@ if ($action === 'create_contact' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = [
             'nom' => $_POST['nom'] ?? '',
             'email' => $_POST['email'] ?? '',
-            'telephone' => $_POST['telephone'] ?? '',
             'sujet' => $_POST['sujet'] ?? '',
             'message' => $_POST['message'] ?? ''
         ];
+
+        // Validation
+        if (!$data['nom'] || !$data['email'] || !$data['sujet'] || !$data['message']) {
+            sendJson(false, 'Tous les champs sont obligatoires');
+        }
 
         $conn = getDBConnection();
         
@@ -435,7 +449,8 @@ if ($action === 'create_contact' && $_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Erreur prepare: " . $conn->error);
         }
         
-        $stmt->bind_param('sssss', $data['nom'], $data['email'], $data['telephone'], $data['sujet'], $data['message']);
+        $phone = ''; // Pas de téléphone pour les messages de contact
+        $stmt->bind_param('sssss', $data['nom'], $data['email'], $phone, $data['sujet'], $data['message']);
         
         if (!$stmt->execute()) {
             throw new Exception("Erreur execute: " . $stmt->error);
@@ -458,15 +473,19 @@ if ($action === 'create_contact' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>";
         sendEmail($data['email'], $clientSubject, $clientHtml);
         
-        echo json_encode(['success' => true, 'message' => 'Message envoyé avec succès']);
         $conn->close();
+        sendJson(true, 'Message envoyé avec succès');
     } catch (Exception $e) {
-        error_log("Erreur contact: " . $e->getMessage());
-        echo json_encode(['success' => false, 'message' => 'Erreur: ' . $e->getMessage()]);
+        sendJson(false, 'Erreur de contact: ' . $e->getMessage());
     }
-    exit;
 }
 
-// Réponse par défaut
-echo json_encode(['success' => false, 'message' => 'Action non reconnue']);
+// Réponse par défaut - Action non reconnue
+if (empty($action)) {
+    sendJson(false, 'Action non spécifiée');
+} else {
+    sendJson(false, 'Action non reconnue: ' . $action);
+}
 ?>
+
+
