@@ -34,93 +34,111 @@ if (reservationForm) {
     reservationForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Récupérer les données du formulaire
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData);
-        
-        // Validation basique
-        if (!data.nom || !data.email || !data.telephone || !data.nomChien) {
-            showMessage(formMessage, 'Veuillez remplir tous les champs obligatoires.', 'error');
-            return;
-        }
-
-        // Validation du checkbox conditions
-        const conditionsCheckbox = document.getElementById('conditions');
-        if (!conditionsCheckbox || !conditionsCheckbox.checked) {
-            showMessage(formMessage, '⚠️ Veuillez accepter les conditions d\'utilisation et la politique de confidentialité.', 'error');
-            conditionsCheckbox?.focus();
-            return;
-        }
-        
-        // Validation email
-        if (!isValidEmail(data.email)) {
-            showMessage(formMessage, 'Veuillez entrer une adresse email valide.', 'error');
-            return;
-        }
-        
-        // Validation date (seulement pour les réservations)
-        if (data.service === 'forfait') {
-            const selectedDate = new Date(data.date);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
+        try {
+            // Récupérer les données du formulaire
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
             
-            if (selectedDate < today) {
-                showMessage(formMessage, 'Veuillez sélectionner une date future.', 'error');
+            // Validation basique
+            if (!data.nom || !data.email || !data.telephone || !data.nomChien) {
+                showMessage(formMessage, 'Veuillez remplir tous les champs obligatoires.', 'error');
                 return;
             }
+
+            // Validation du checkbox conditions
+            const conditionsCheckbox = document.getElementById('conditions');
+            if (!conditionsCheckbox || !conditionsCheckbox.checked) {
+                showMessage(formMessage, '⚠️ Veuillez accepter les conditions d\'utilisation et la politique de confidentialité.', 'error');
+                conditionsCheckbox?.focus();
+                return;
+            }
+            
+            // Validation email
+            if (!isValidEmail(data.email)) {
+                showMessage(formMessage, 'Veuillez entrer une adresse email valide.', 'error');
+                return;
+            }
+            
+            // Validation date (seulement pour les réservations)
+            if (data.service === 'forfait') {
+                const selectedDate = new Date(data.date);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                
+                if (selectedDate < today) {
+                    showMessage(formMessage, 'Veuillez sélectionner une date future.', 'error');
+                    return;
+                }
+            }
+            
+            // Déterminer l'action (réservation ou abonnement)
+            let action = (data.service === 'abonnement') ? 'create_subscription' : 'create_reservation';
+            
+            // Ajouter le montant en fonction du service
+            let price = (data.service === 'abonnement') ? 15000 : 20000;
+            
+            let successMessage = (data.service === 'abonnement') 
+                ? `✅ Merci ${data.nom}! Votre demande d'abonnement pour ${data.nomChien} a été reçue. Redirection vers le paiement...`
+                : `✅ Merci ${data.nom}! Votre réservation pour ${data.nomChien} est confirmée. Redirection vers le paiement...`;
+            
+            // Afficher le message de traitement
+            showMessage(formMessage, (action === 'create_subscription') ? '⏳ Traitement de votre abonnement...' : '⏳ Traitement de votre réservation...', 'success');
+            
+            // Envoyer les données à l'API
+            const formDataToSend = new FormData();
+            formDataToSend.append('action', action);
+            formDataToSend.append('price', price);
+            Object.keys(data).forEach(key => {
+                formDataToSend.append(key, data[key]);
+            });
+            
+            console.log('✅ Envoi de la réservation à l\'API...', action);
+            
+            fetch('api.php', {
+                method: 'POST',
+                body: formDataToSend
+            })
+            .then(response => {
+                console.log('Réponse du serveur:', response.status);
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                return response.text().then(text => {
+                    console.log('Réponse brute:', text);
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw new Error('Réponse invalide du serveur: ' + text);
+                    }
+                });
+            })
+            .then(result => {
+                console.log('Résultat:', result);
+                if (result.success) {
+                    showMessage(formMessage, successMessage, 'success');
+                    
+                    // Stocker les données dans sessionStorage pour la page de confirmation
+                    sessionStorage.setItem('reservationData', JSON.stringify(data));
+                    
+                    // Réinitialiser le formulaire
+                    reservationForm.reset();
+                    
+                    // Rediriger vers la page de confirmation après 2 secondes (pour réservations et abonnements)
+                    setTimeout(() => {
+                        window.location.href = 'confirmation.html';
+                    }, 2000);
+                } else {
+                    showMessage(formMessage, '❌ Erreur: ' + result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur complète:', error);
+                showMessage(formMessage, '❌ Erreur: ' + error.message, 'error');
+            });
+        } catch (error) {
+            console.error('Erreur de traitement:', error);
+            showMessage(formMessage, '❌ Erreur: ' + error.message, 'error');
         }
-        
-        // Déterminer l'action (réservation ou abonnement)
-        let action = (data.service === 'abonnement') ? 'create_subscription' : 'create_reservation';
-        
-        // Ajouter le montant en fonction du service
-        let price = (data.service === 'abonnement') ? 15000 : 20000;
-        
-        let successMessage = (data.service === 'abonnement') 
-            ? `✅ Merci ${data.nom}! Votre demande d'abonnement pour ${data.nomChien} a été reçue. Redirection vers le paiement...`
-            : `✅ Merci ${data.nom}! Votre réservation pour ${data.nomChien} est confirmée. Redirection vers le paiement...`;
-        
-        // Afficher le message de traitement
-        showMessage(formMessage, (action === 'create_subscription') ? '⏳ Traitement de votre abonnement...' : '⏳ Traitement de votre réservation...', 'success');
-        
-        // Envoyer les données à l'API
-        const formDataToSend = new FormData();
-        formDataToSend.append('action', action);
-        formDataToSend.append('price', price);
-        Object.keys(data).forEach(key => {
-            formDataToSend.append(key, data[key]);
-        });
-        
-        fetch('api.php', {
-            method: 'POST',
-            body: formDataToSend
-        })
-        .then(response => {
-            // Vérifier si la réponse est ok
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(result => {
-            if (result.success) {
-                showMessage(formMessage, successMessage, 'success');
-                
-                // Stocker les données dans sessionStorage pour la page de confirmation
-                sessionStorage.setItem('reservationData', JSON.stringify(data));
-                
-                // Rediriger vers la page de confirmation après 2 secondes (pour réservations et abonnements)
-                setTimeout(() => {
-                    window.location.href = 'confirmation.html';
-                }, 2000);
-            } else {
-                showMessage(formMessage, '❌ Erreur: ' + result.message, 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showMessage(formMessage, '❌ Erreur de connexion au serveur: ' + error.message, 'error');
-        });
     });
 }
 
@@ -132,61 +150,76 @@ if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Récupérer les données
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData);
-        
-        // Validation
-        if (!data.nom || !data.email || !data.sujet || !data.message) {
-            showMessage(contactFormMessage, 'Veuillez remplir tous les champs.', 'error');
-            return;
-        }
-        
-        if (!isValidEmail(data.email)) {
-            showMessage(contactFormMessage, 'Veuillez entrer une adresse email valide.', 'error');
-            return;
-        }
-        
-        // Afficher le message de traitement
-        showMessage(contactFormMessage, '⏳ Envoi du message...', 'success');
-        
-        // Envoyer les données à l'API
-        const formDataToSend = new FormData();
-        formDataToSend.append('action', 'create_contact');
-        Object.keys(data).forEach(key => {
-            formDataToSend.append(key, data[key]);
-        });
-        
-        fetch('api.php', {
-            method: 'POST',
-            body: formDataToSend
-        })
-        .then(response => {
-            // Vérifier si la réponse est ok
-            if (!response.ok) {
-                throw new Error(`Erreur HTTP: ${response.status}`);
+        try {
+            // Récupérer les données
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validation
+            if (!data.nom || !data.email || !data.sujet || !data.message) {
+                showMessage(contactFormMessage, 'Veuillez remplir tous les champs.', 'error');
+                return;
             }
-            return response.json();
-        })
-        .then(result => {
-            if (result.success) {
-                showMessage(contactFormMessage, '✅ Votre message a été envoyé avec succès! Nous vous répondrons dans les 24 heures.', 'success');
-                
-                // Réinitialiser
-                contactForm.reset();
-                
-                // Masquer après 8 secondes
-                setTimeout(() => {
-                    contactFormMessage.classList.remove('success', 'error');
-                }, 8000);
-            } else {
-                showMessage(contactFormMessage, '❌ Erreur: ' + result.message, 'error');
+            
+            if (!isValidEmail(data.email)) {
+                showMessage(contactFormMessage, 'Veuillez entrer une adresse email valide.', 'error');
+                return;
             }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            showMessage(contactFormMessage, '❌ Erreur de connexion au serveur: ' + error.message, 'error');
-        });
+            
+            // Afficher le message de traitement
+            showMessage(contactFormMessage, '⏳ Envoi du message...', 'success');
+            
+            // Envoyer les données à l'API
+            const formDataToSend = new FormData();
+            formDataToSend.append('action', 'create_contact');
+            Object.keys(data).forEach(key => {
+                formDataToSend.append(key, data[key]);
+            });
+            
+            console.log('✅ Envoi du message de contact à l\'API...');
+            
+            fetch('api.php', {
+                method: 'POST',
+                body: formDataToSend
+            })
+            .then(response => {
+                console.log('Réponse du serveur:', response.status);
+                if (!response.ok) {
+                    throw new Error(`Erreur HTTP: ${response.status}`);
+                }
+                return response.text().then(text => {
+                    console.log('Réponse brute:', text);
+                    try {
+                        return JSON.parse(text);
+                    } catch (e) {
+                        throw new Error('Réponse invalide du serveur: ' + text);
+                    }
+                });
+            })
+            .then(result => {
+                console.log('Résultat:', result);
+                if (result.success) {
+                    showMessage(contactFormMessage, '✅ Votre message a été envoyé avec succès! Nous vous répondrons dans les 24 heures.', 'success');
+                    
+                    // Réinitialiser
+                    contactForm.reset();
+                    
+                    // Masquer après 8 secondes
+                    setTimeout(() => {
+                        contactFormMessage.classList.remove('success', 'error');
+                    }, 8000);
+                } else {
+                    showMessage(contactFormMessage, '❌ Erreur: ' + result.message, 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur complète:', error);
+                showMessage(contactFormMessage, '❌ Erreur: ' + error.message, 'error');
+            });
+        } catch (error) {
+            console.error('Erreur de traitement:', error);
+            showMessage(contactFormMessage, '❌ Erreur: ' + error.message, 'error');
+        }
     });
 }
 
@@ -458,3 +491,5 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('mousedown', function() {
     document.body.classList.remove('keyboard-focused');
 });
+
+
